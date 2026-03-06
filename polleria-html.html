@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<!-- DOCTYPE le dice al navegador que este archivo usa HTML5 (la versión moderna) -->
+<html lang="es">
+<!-- lang="es" indica que el idioma de la página es español -->
+
+<head>
+  <!-- HEAD contiene información sobre la página, no se muestra visualmente -->
+
+  <meta charset="UTF-8"/>
+  <!-- charset="UTF-8" permite usar tildes, ñ y caracteres especiales correctamente -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- viewport hace que la página se adapte al tamaño de la pantalla (responsivo) -->
+
+  <title>Pollería Nicol</title>
+  <!-- TITLE es el texto que aparece en la pestaña del navegador -->
+
+  <link rel="stylesheet" href="style.css"/>
+  <!-- Conecta este HTML con el archivo de estilos style.css -->
+</head>
+
+<body>
+<!-- BODY contiene todo lo que se muestra visualmente en la página -->
+
+<!-- ============================================================
+     ENCABEZADO PRINCIPAL
+     Barra superior con el nombre del negocio y botón de editar
+     ============================================================ -->
+<header>
+  <h1>🍗 <span id="bizName">Pollería Nicol</span></h1>
+  <!-- id="bizName" permite que JavaScript actualice el nombre dinámicamente -->
+
+  <button class="edit-name-btn" onclick="openEditName()">✏️ Editar nombre</button>
+  <!-- onclick llama a la función openEditName() al hacer clic -->
+</header>
+
+<!-- ============================================================
+     BARRA DE NAVEGACIÓN
+     Pestañas para cambiar entre secciones de la app
+     ============================================================ -->
+<nav>
+  <button class="active" onclick="showTab('dashboard')">📊 Dashboard</button>
+  <!-- class="active" resalta la pestaña seleccionada actualmente -->
+  <button onclick="showTab('productos')">🍽️ Carta</button>
+  <button onclick="showTab('pedidos')">📋 Pedidos</button>
+  <button onclick="showTab('ventas')">💰 Ventas</button>
+  <button onclick="showTab('clientes')">👥 Clientes</button>
+  <button onclick="showTab('reportes')">📈 Reportes</button>
+  <button onclick="showTab('config')">⚙️ Config</button>
+</nav>
+
+<!-- ============================================================
+     CONTENIDO PRINCIPAL
+     Cada sección se muestra u oculta según la pestaña activa
+     ============================================================ -->
+<main>
+
+  <!-- ==================== DASHBOARD ==================== -->
+  <!-- Se muestra al inicio. Resumen del negocio en tiempo real -->
+  <div id="tab-dashboard" class="section active">
+
+    <!-- Cuadrícula de tarjetas con estadísticas del día -->
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="val" id="st-ventas">0</div>
+        <div class="lbl">Ventas hoy</div>
+      </div>
+      <div class="stat">
+        <div class="val" id="st-ingresos">S/ 0</div>
+        <div class="lbl">Ingresos hoy</div>
+      </div>
+      <div class="stat">
+        <div class="val" id="st-pedidos">0</div>
+        <div class="lbl">Pedidos activos</div>
+      </div>
+      <div class="stat">
+        <div class="val" id="st-platos">0</div>
+        <div class="lbl">Platos en carta</div>
+      </div>
+    </div>
+
+    <!-- Lista de los pedidos más recientes -->
+    <div class="card">
+      <h2>📦 Pedidos recientes</h2>
+      <div id="dash-pedidos">
+        <div class="empty">Sin pedidos aún</div>
+        <!-- JavaScript reemplazará este texto con los pedidos reales -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CARTA (PRODUCTOS) ==================== -->
+  <!-- Sección para agregar y ver los platos disponibles -->
+  <div id="tab-productos" class="section">
+
+    <!-- Formulario para agregar un nuevo plato -->
+    <div class="card">
+      <h2>➕ Agregar plato</h2>
+
+      <!-- form-row agrupa campos en una misma fila -->
+      <div class="form-row">
+        <input id="p-nombre" placeholder="Nombre del plato"/>
+        <select id="p-cat">
+          <!-- Categorías disponibles para clasificar los platos -->
+          <option>Pollos</option>
+          <option>Parrillas</option>
+          <option>Entradas</option>
+          <option>Bebidas</option>
+          <option>Otros</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <input id="p-precio" type="number" placeholder="Precio (S/)" min="0" step="0.5"/>
+        <!-- type="number" muestra teclado numérico en móvil -->
+        <!-- min="0" evita precios negativos; step="0.5" permite centavos de 50 -->
+        <input id="p-desc" placeholder="Descripción (opcional)"/>
+      </div>
+      <button class="btn btn-primary" onclick="addPlato()">Agregar plato</button>
+    </div>
+
+    <!-- Tabla con todos los platos registrados -->
+    <div class="card">
+      <h2>🍽️ Carta actual</h2>
+      <div class="tbl-wrap">
+        <!-- tbl-wrap permite scroll horizontal si la tabla es muy ancha -->
+        <table>
+          <thead>
+            <tr>
+              <th>Plato</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-platos">
+            <!-- JavaScript llenará este tbody con las filas de platos -->
+            <tr><td colspan="4" class="empty">Sin platos aún</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PEDIDOS ==================== -->
+  <!-- Sección para crear y gestionar pedidos activos -->
+  <div id="tab-pedidos" class="section">
+
+    <div class="card">
+      <h2>➕ Nuevo pedido</h2>
+      <div class="form-row">
+        <input id="ped-cliente" placeholder="Nombre del cliente"/>
+        <select id="ped-tipo">
+          <option>Mesa</option>
+          <option>Delivery</option>
+          <option>Para llevar</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <input id="ped-mesa" placeholder="Mesa / dirección"/>
+      </div>
+
+      <!-- Aquí JavaScript insertará los ítems del pedido dinámicamente -->
+      <div id="ped-items-wrap"></div>
+
+      <button class="btn btn-success btn-sm" onclick="addPedidoItem()" style="margin-bottom:10px">
+        + Agregar ítem
+      </button><br>
+      <button class="btn btn-primary" onclick="crearPedido()">Crear pedido</button>
+    </div>
+
+    <!-- Lista de pedidos que aún no han sido entregados -->
+    <div class="card">
+      <h2>📋 Pedidos activos</h2>
+      <div id="lista-pedidos">
+        <div class="empty">Sin pedidos activos</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VENTAS ==================== -->
+  <!-- Historial de todas las ventas registradas -->
+  <div id="tab-ventas" class="section">
+    <div class="card">
+      <h2>💰 Historial de ventas</h2>
+
+      <!-- Campo de búsqueda: oninput filtra mientras el usuario escribe -->
+      <div class="form-row">
+        <input id="v-buscar" placeholder="Buscar por cliente..." oninput="renderVentas()"/>
+      </div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Cliente</th><th>Tipo</th>
+              <th>Total</th><th>Estado</th><th>Fecha</th><th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-ventas">
+            <tr><td colspan="7" class="empty">Sin ventas aún</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CLIENTES ==================== -->
+  <!-- Registro de clientes con consulta de DNI/RUC -->
+  <div id="tab-clientes" class="section">
+
+    <div class="card">
+      <h2>➕ Agregar cliente</h2>
+
+      <!-- Fila especial para consultar DNI o RUC -->
+      <div class="dni-row">
+        <input id="cl-doc"
+          placeholder="DNI (8 dígitos) o RUC (11 dígitos)"
+          maxlength="11"
+          oninput="onDocInput('cl')"/>
+        <!-- maxlength="11" limita a 11 caracteres (máximo de un RUC) -->
+        <!-- oninput detecta en tiempo real si es DNI o RUC -->
+
+        <!-- Etiqueta que aparece automáticamente mostrando "DNI" o "RUC" -->
+        <span id="cl-doc-badge" class="dni-badge" style="display:none"></span>
+
+        <button class="btn btn-primary btn-sm" onclick="consultarDoc('cl')">
+          🔍 Consultar
+        </button>
+      </div>
+
+      <!-- Aquí aparece el nombre encontrado o el mensaje de error -->
+      <div id="cl-doc-info" class="dni-info"></div>
+
+      <div class="form-row">
+        <input id="cl-nombre" placeholder="Nombre (se llena automático)"/>
+        <input id="cl-telefono" placeholder="Teléfono"/>
+      </div>
+      <div class="form-row">
+        <input id="cl-email" placeholder="Email (opcional)"/>
+      </div>
+      <button class="btn btn-primary" onclick="addCliente()">Agregar cliente</button>
+    </div>
+
+    <!-- Tabla con todos los clientes registrados -->
+    <div class="card">
+      <h2>👥 Lista de clientes</h2>
+      <div class="form-row">
+        <input id="cl-buscar" placeholder="Buscar por nombre o doc..." oninput="renderClientes()"/>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th><th>Doc.</th><th>Tipo</th>
+              <th>Teléfono</th><th>Pedidos</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-clientes">
+            <tr><td colspan="6" class="empty">Sin clientes aún</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== REPORTES ==================== -->
+  <!-- Estadísticas, gráficos y ranking de platos -->
+  <div id="tab-reportes" class="section">
+
+    <div class="stats-grid">
+      <div class="stat"><div class="val" id="r-total">S/ 0</div><div class="lbl">Ingresos totales</div></div>
+      <div class="stat"><div class="val" id="r-count">0</div><div class="lbl">Total ventas</div></div>
+      <div class="stat"><div class="val" id="r-promedio">S/ 0</div><div class="lbl">Ticket promedio</div></div>
+    </div>
+
+    <!-- Gráfico de barras: ventas de los últimos 7 días -->
+    <div class="card">
+      <h2>📈 Ventas por día (últimos 7 días)</h2>
+      <div class="chart-bar-wrap" id="chart-dias">
+        <!-- JavaScript dibuja las barras aquí -->
+      </div>
+    </div>
+
+    <!-- Ranking de los platos más vendidos -->
+    <div class="card">
+      <h2>🏆 Platos más vendidos</h2>
+      <div id="top-platos">
+        <div class="empty">Sin datos aún</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CONFIGURACIÓN ==================== -->
+  <!-- Datos del negocio y opciones de limpieza de datos -->
+  <div id="tab-config" class="section">
+
+    <div class="card">
+      <h2>⚙️ Configuración general</h2>
+      <div class="form-row">
+        <input id="cfg-nombre" placeholder="Nombre del negocio"/>
+        <button class="btn btn-primary" onclick="saveConfig()">Guardar nombre</button>
+      </div>
+      <div class="form-row">
+        <input id="cfg-direccion" placeholder="Dirección"/>
+        <input id="cfg-telefono" placeholder="Teléfono"/>
+      </div>
+      <button class="btn btn-success" style="margin-top:4px" onclick="saveConfigFull()">
+        Guardar todo
+      </button>
+    </div>
+
+    <!-- Zona peligrosa: acciones que eliminan datos permanentemente -->
+    <div class="card">
+      <h2>🗑️ Zona de peligro</h2>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px">
+        Estas acciones son irreversibles.
+      </p>
+      <button class="btn btn-danger btn-sm" onclick="clearVentas()">Eliminar historial</button>
+      &nbsp;
+      <button class="btn btn-danger btn-sm" onclick="clearPlatos()">Eliminar carta</button>
+      &nbsp;
+      <button class="btn btn-danger btn-sm" onclick="clearClientes()">Eliminar clientes</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- ============================================================
+     MODALES (VENTANAS EMERGENTES)
+     Están ocultas por defecto y se muestran al editar algo
+     ============================================================ -->
+
+<!-- Modal para editar el nombre del negocio -->
+<div class="modal-overlay" id="modal-name">
+  <div class="modal">
+    <h3>✏️ Editar nombre</h3>
+    <input id="modal-name-input" placeholder="Nuevo nombre"/>
+    <div class="modal-btns">
+      <button class="btn btn-primary" onclick="saveEditName()">Guardar</button>
+      <button class="btn btn-gray" onclick="closeModal('modal-name')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para editar un plato de la carta -->
+<div class="modal-overlay" id="modal-edit-plato">
+  <div class="modal">
+    <h3>✏️ Editar plato</h3>
+    <input id="ep-nombre" placeholder="Nombre"/>
+    <select id="ep-cat">
+      <option>Pollos</option><option>Parrillas</option>
+      <option>Entradas</option><option>Bebidas</option><option>Otros</option>
+    </select>
+    <input id="ep-precio" type="number" placeholder="Precio (S/)"/>
+    <input id="ep-desc" placeholder="Descripción"/>
+    <input type="hidden" id="ep-id"/>
+    <!-- type="hidden" guarda el ID del plato sin mostrarlo al usuario -->
+    <div class="modal-btns">
+      <button class="btn btn-primary" onclick="saveEditPlato()">Guardar</button>
+      <button class="btn btn-gray" onclick="closeModal('modal-edit-plato')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para editar un cliente -->
+<div class="modal-overlay" id="modal-edit-cl">
+  <div class="modal">
+    <h3>✏️ Editar cliente</h3>
+    <input id="ecl-doc" placeholder="DNI o RUC"/>
+    <input id="ecl-nombre" placeholder="Nombre"/>
+    <input id="ecl-tel" placeholder="Teléfono"/>
+    <input id="ecl-email" placeholder="Email"/>
+    <input type="hidden" id="ecl-id"/>
+    <div class="modal-btns">
+      <button class="btn btn-primary" onclick="saveEditCl()">Guardar</button>
+      <button class="btn btn-gray" onclick="closeModal('modal-edit-cl')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Conecta este HTML con el archivo de lógica script.js -->
+<!-- Se coloca al final del body para que el HTML cargue primero -->
+<script src="script.js"></script>
+</body>
+</html>

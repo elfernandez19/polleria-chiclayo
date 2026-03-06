@@ -1,0 +1,404 @@
+/* =====================================================================
+   VARIABLES GLOBALES Y RESET
+   Las variables (--primary, etc.) permiten cambiar colores en un solo
+   lugar y que se actualicen en toda la app automáticamente.
+   El reset (*) elimina márgenes y rellenos predeterminados del navegador.
+   ===================================================================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+/* box-sizing: border-box hace que el ancho incluya bordes y relleno */
+
+:root {
+  --primary: #e65c00;    /* Color principal: naranja oscuro (botones, títulos) */
+  --secondary: #f9a825;  /* Color secundario: amarillo (degradados) */
+  --bg: #f5f5f5;         /* Color de fondo general de la página */
+  --white: #fff;         /* Blanco puro para tarjetas */
+  --text: #333;          /* Color del texto principal */
+  --muted: #888;         /* Gris para textos secundarios o desactivados */
+  --danger: #e53935;     /* Rojo para botones de eliminar o alertas */
+  --success: #43a047;    /* Verde para confirmaciones o estados positivos */
+  --radius: 10px;        /* Radio de bordes redondeados, usado en tarjetas y botones */
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif; /* Fuente moderna y legible */
+  background: var(--bg);  /* Fondo gris claro */
+  color: var(--text);     /* Color de texto por defecto */
+  min-height: 100vh;      /* La página ocupa al menos toda la altura de la pantalla */
+}
+
+/* =====================================================================
+   ENCABEZADO (HEADER)
+   Barra superior con el nombre del negocio y botón de editar
+   ===================================================================== */
+header {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  /* Degradado diagonal de naranja a amarillo */
+  color: #fff;
+  padding: 14px 20px;         /* Espacio interior: 14px arriba/abajo, 20px izquierda/derecha */
+  display: flex;               /* Organiza los elementos en fila */
+  align-items: center;         /* Centra verticalmente los elementos */
+  justify-content: space-between; /* Separa el título del botón a los extremos */
+  flex-wrap: wrap;             /* Si no caben, los elementos pasan a la siguiente línea */
+  gap: 8px;                    /* Espacio entre elementos */
+  box-shadow: 0 2px 8px rgba(0,0,0,.2); /* Sombra suave debajo del header */
+}
+
+header h1 {
+  font-size: 1.3rem;   /* Tamaño del título */
+  display: flex;
+  align-items: center;
+  gap: 8px;            /* Espacio entre el emoji y el texto */
+}
+
+/* Botón pequeño para editar el nombre del negocio */
+.edit-name-btn {
+  background: rgba(255,255,255,.2); /* Blanco semitransparente */
+  border: 1px solid rgba(255,255,255,.5);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 20px; /* Bordes muy redondeados (forma de píldora) */
+  cursor: pointer;     /* Muestra manita al pasar el ratón */
+  font-size: .8rem;
+}
+
+/* =====================================================================
+   BARRA DE NAVEGACIÓN (NAV)
+   Pestañas horizontales para cambiar entre secciones
+   ===================================================================== */
+nav {
+  background: #fff;
+  display: flex;              /* Coloca los botones en fila */
+  overflow-x: auto;           /* Permite scroll horizontal en pantallas pequeñas */
+  border-bottom: 2px solid #eee;
+  box-shadow: 0 1px 4px rgba(0,0,0,.07);
+}
+
+nav button {
+  flex: 1;              /* Cada botón ocupa el mismo espacio disponible */
+  min-width: 100px;     /* Ancho mínimo para no quedar muy pequeños */
+  padding: 13px 8px;
+  border: none;
+  background: none;     /* Sin fondo por defecto */
+  cursor: pointer;
+  font-size: .85rem;
+  color: var(--muted);  /* Gris cuando no está activo */
+  font-weight: 600;
+  transition: .2s;      /* Animación suave al cambiar de estado */
+  white-space: nowrap;  /* Evita que el texto se parta en dos líneas */
+}
+
+/* Estilo del botón activo (pestaña seleccionada) */
+nav button.active {
+  color: var(--primary);
+  border-bottom: 3px solid var(--primary); /* Línea naranja debajo */
+}
+
+/* =====================================================================
+   CONTENEDOR PRINCIPAL Y SECCIONES
+   ===================================================================== */
+main {
+  max-width: 960px;    /* Ancho máximo del contenido */
+  margin: 0 auto;      /* Centra el contenido horizontalmente */
+  padding: 16px;
+}
+
+.section { display: none; }         /* Por defecto todas las secciones están ocultas */
+.section.active { display: block; } /* Solo muestra la sección con clase "active" */
+
+/* =====================================================================
+   TARJETAS (CARDS)
+   Contenedores blancos con sombra para agrupar contenido
+   ===================================================================== */
+.card {
+  background: #fff;
+  border-radius: var(--radius); /* Bordes redondeados usando la variable */
+  padding: 16px;
+  margin-bottom: 14px;          /* Espacio entre tarjetas */
+  box-shadow: 0 1px 6px rgba(0,0,0,.08); /* Sombra muy suave */
+}
+
+.card h2 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: var(--primary); /* Título en naranja */
+}
+
+/* =====================================================================
+   CUADRÍCULA DE ESTADÍSTICAS (DASHBOARD)
+   ===================================================================== */
+.stats-grid {
+  display: grid;
+  /* auto-fit: crea tantas columnas como quepan; minmax: mínimo 140px, máximo igual */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 1px 6px rgba(0,0,0,.08);
+}
+
+.stat .val {
+  font-size: 1.6rem;  /* Número grande y visible */
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stat .lbl {
+  font-size: .78rem;
+  color: var(--muted); /* Etiqueta en gris */
+  margin-top: 4px;
+}
+
+/* =====================================================================
+   FORMULARIOS
+   Filas de campos de entrada para agregar datos
+   ===================================================================== */
+.form-row {
+  display: flex;
+  flex-wrap: wrap; /* Si no caben los campos, pasan a la siguiente línea */
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.form-row input,
+.form-row select {
+  flex: 1;             /* Cada campo ocupa el espacio disponible por igual */
+  min-width: 120px;    /* Ancho mínimo para no quedar muy pequeños en móvil */
+  padding: 9px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: .9rem;
+  outline: none;       /* Elimina el borde azul predeterminado del navegador */
+}
+
+/* Borde naranja al enfocar un campo */
+.form-row input:focus,
+.form-row select:focus { border-color: var(--primary); }
+
+/* =====================================================================
+   BOTONES
+   ===================================================================== */
+.btn {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: .85rem;
+  font-weight: 600;
+  transition: .2s; /* Animación suave al hacer hover */
+}
+
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: #cf4800; } /* Más oscuro al pasar el ratón */
+
+.btn-success { background: var(--success); color: #fff; }
+.btn-success:hover { background: #388e3c; }
+
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { background: #c62828; }
+
+.btn-gray { background: #eee; color: #333; } /* Botón neutro (cancelar) */
+
+.btn-sm { padding: 5px 10px; font-size: .78rem; } /* Versión pequeña del botón */
+
+/* =====================================================================
+   TABLA DE DATOS
+   ===================================================================== */
+.tbl-wrap { overflow-x: auto; } /* Permite scroll horizontal en tablas muy anchas */
+
+table {
+  width: 100%;
+  border-collapse: collapse; /* Elimina el doble borde entre celdas */
+  font-size: .85rem;
+}
+
+/* Cabecera de la tabla */
+th {
+  background: #fef3e2;       /* Fondo naranja muy claro */
+  color: var(--primary);
+  padding: 10px 8px;
+  text-align: left;
+  white-space: nowrap;       /* Evita que los títulos se corten */
+}
+
+/* Celdas de datos */
+td {
+  padding: 9px 8px;
+  border-bottom: 1px solid #f0f0f0; /* Línea separadora entre filas */
+  vertical-align: middle;            /* Centra el contenido verticalmente */
+}
+
+tr:hover td { background: #fffaf5; } /* Color de fondo al pasar el ratón sobre una fila */
+
+/* =====================================================================
+   ETIQUETAS DE ESTADO (BADGES)
+   Pequeñas pastillas de color para indicar categorías o estados
+   ===================================================================== */
+.badge {
+  padding: 3px 9px;
+  border-radius: 20px; /* Forma ovalada */
+  font-size: .75rem;
+  font-weight: 600;
+}
+
+.badge-green  { background: #e8f5e9; color: #2e7d32; } /* Verde: entregado / activo */
+.badge-orange { background: #fff3e0; color: #e65c00; } /* Naranja: pendiente / categoría */
+.badge-red    { background: #ffebee; color: #c62828; } /* Rojo: cancelado / problema */
+.badge-blue   { background: #e3f2fd; color: #1565c0; } /* Azul: RUC */
+
+/* =====================================================================
+   MODALES (VENTANAS EMERGENTES)
+   ===================================================================== */
+.modal-overlay {
+  display: none;           /* Oculto por defecto */
+  position: fixed;         /* Se posiciona sobre todo el contenido */
+  inset: 0;                /* Cubre toda la pantalla (top/right/bottom/left = 0) */
+  background: rgba(0,0,0,.45); /* Fondo oscuro semitransparente */
+  z-index: 100;            /* Se muestra por encima de todos los demás elementos */
+  justify-content: center; /* Centra el modal horizontalmente */
+  align-items: center;     /* Centra el modal verticalmente */
+}
+
+.modal-overlay.open { display: flex; } /* Se muestra cuando tiene clase "open" */
+
+.modal {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 22px;
+  width: 90%;        /* Ocupa el 90% del ancho disponible */
+  max-width: 440px;  /* Pero nunca más de 440px */
+  box-shadow: 0 4px 24px rgba(0,0,0,.18);
+}
+
+.modal h3 { margin-bottom: 14px; color: var(--primary); }
+
+.modal input,
+.modal select {
+  width: 100%;
+  padding: 9px 12px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: .9rem;
+}
+
+.modal-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end; /* Botones alineados a la derecha */
+  margin-top: 6px;
+}
+
+/* =====================================================================
+   GRÁFICO DE BARRAS (REPORTES)
+   ===================================================================== */
+.chart-bar-wrap {
+  display: flex;
+  align-items: flex-end; /* Las barras crecen hacia arriba desde la base */
+  gap: 8px;
+  height: 120px;         /* Altura máxima del gráfico */
+  padding: 8px 0;
+}
+
+.chart-bar-col {
+  flex: 1;               /* Cada columna ocupa el mismo espacio */
+  display: flex;
+  flex-direction: column; /* Apila: valor → barra → etiqueta (de arriba a abajo) */
+  align-items: center;
+  gap: 4px;
+}
+
+.chart-bar {
+  width: 100%;
+  background: linear-gradient(180deg, var(--secondary), var(--primary));
+  border-radius: 4px 4px 0 0; /* Bordes redondeados solo arriba */
+  min-height: 4px;   /* Altura mínima para que se vea aunque el valor sea 0 */
+  transition: .4s;   /* Animación al cambiar el tamaño */
+  /* La altura real se asigna desde JavaScript según el valor */
+}
+
+.chart-lbl { font-size: .7rem; color: var(--muted); }   /* Día de la semana */
+.chart-val { font-size: .72rem; font-weight: 700; color: var(--primary); } /* Monto en S/ */
+
+/* =====================================================================
+   SECCIÓN DNI / RUC
+   ===================================================================== */
+.dni-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.dni-row input {
+  flex: 1;
+  padding: 9px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: .9rem;
+  outline: none;
+}
+
+.dni-row input:focus { border-color: var(--primary); }
+
+/* Etiqueta pequeña que indica si es DNI o RUC */
+.dni-badge {
+  font-size: .72rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.dni-ok { background: #e8f5e9; color: #2e7d32; } /* Verde para DNI válido */
+
+/* Mensaje de resultado de la consulta (nombre encontrado o error) */
+.dni-info {
+  font-size: .82rem;
+  color: var(--success);
+  font-weight: 600;
+  margin-bottom: 8px;
+  min-height: 18px; /* Reserva espacio para evitar saltos de layout */
+}
+
+/* =====================================================================
+   ANIMACIÓN DE CARGA (SPINNER)
+   Círculo giratorio que aparece mientras se consulta el DNI/RUC
+   ===================================================================== */
+.spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid #ddd;
+  border-top-color: var(--primary); /* Solo el borde superior tiene color → efecto giratorio */
+  border-radius: 50%;               /* Forma circular */
+  animation: spin .7s linear infinite; /* Gira indefinidamente */
+  vertical-align: middle;
+}
+
+/* Define el movimiento de rotación del spinner */
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* =====================================================================
+   ESTADO VACÍO
+   Mensaje centrado cuando una lista no tiene datos
+   ===================================================================== */
+.empty {
+  text-align: center;
+  padding: 30px;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+/* =====================================================================
+   DISEÑO RESPONSIVO
+   Ajustes para pantallas pequeñas (celulares)
+   @media aplica estilos solo cuando el ancho sea 500px o menos
+   ===================================================================== */
+@media (max-width: 500px) {
+  header h1 { font-size: 1.1rem; }       /* Título más pequeño en móvil */
+  nav button { min-width: 80px; font-size: .78rem; } /* Botones del menú más compactos */
+}
